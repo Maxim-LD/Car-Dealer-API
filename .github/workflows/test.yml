@@ -65,7 +65,7 @@ jobs:
           node-version: '16'
 
       - name: Install Dependencies
-        run: npm install && npm run build
+        run: npm install && tsc
 
       - name: Run Tests
         run: npm test
