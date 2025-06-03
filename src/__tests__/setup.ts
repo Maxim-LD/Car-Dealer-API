@@ -3,6 +3,8 @@ jest.setTimeout(30000); // Increase timeout for all tests/hooks
 
 process.env.DATABASE_URL = 'mongodb://localhost:27017/car-dealer-test';
 process.env.JWT_SECRET = 'testsecretkey123';
+process.env.SECRET_KEY = 'testsecretkey123';
+process.env.REFRESH_KEY = 'testrefreshkey123';
 
 import mongoose from 'mongoose';
 
