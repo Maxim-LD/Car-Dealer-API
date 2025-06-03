@@ -1,15 +1,10 @@
-import { describe, it, beforeEach, expect, vi } from 'vitest';
 import request from 'supertest';
 import app from '../../../app';
 import { userService, managerService, carService } from '../../../controllers/admin/manageUser';
 import { Role } from '../../../interfaces/enums';
 import type { Request, Response, NextFunction } from 'express';
 
-interface MockedAuthModule {
-    authMiddleware: (req: Request, res: Response, next: NextFunction) => void;
-}
-
-vi.mock('../../../middlewares/authentication', () => ({
+jest.mock('../../../middlewares/authentication', () => ({
     authMiddleware: (req: Request, res: Response, next: NextFunction) => next(),
     protect: (req: Request, res: Response, next: NextFunction) => next(),
     isManager: (req: Request, res: Response, next: NextFunction) => next(),
@@ -19,14 +14,14 @@ vi.mock('../../../middlewares/authentication', () => ({
 
 describe('Admin Manage User', () => {
     beforeEach(() => {
-        vi.restoreAllMocks();
+        jest.restoreAllMocks();
     });
 
     const validId = '6838ce9c0aeeaf4cbe5495c8'
 
     describe('getUser', () => {
         it('should return 404 if user not found', async () => {
-            vi.spyOn(userService, 'findById').mockResolvedValue(null);
+            jest.spyOn(userService, 'findById').mockResolvedValue(null);
 
             const res = await request(app)
                 .get(`/api/v1/admin/user/${validId}`);
@@ -36,7 +31,7 @@ describe('Admin Manage User', () => {
         });
 
         it('should return 200 and user data if found', async () => {
-            vi.spyOn(userService, 'findById').mockResolvedValue({
+            jest.spyOn(userService, 'findById').mockResolvedValue({
             _id: 'mock-user-id',
             name: 'Test User',
             email: 'customer@email.com',
@@ -55,7 +50,7 @@ describe('Admin Manage User', () => {
 
     describe('approveManager', () => {
         it('should return 404 if manager not found', async () => {
-            vi.spyOn(managerService, 'findById').mockResolvedValue(null);
+            jest.spyOn(managerService, 'findById').mockResolvedValue(null);
 
             const res = await request(app)
                 .patch(`/api/v1/admin/approve-manager/${validId}`);
@@ -65,7 +60,7 @@ describe('Admin Manage User', () => {
         });
 
         it('should return 400 if user is admin', async () => {
-            vi.spyOn(managerService, 'findById').mockResolvedValue({
+            jest.spyOn(managerService, 'findById').mockResolvedValue({
             _id: 'mock-user-id',
             name: 'Test User',
             email: 'customer@email.com',
@@ -81,7 +76,7 @@ describe('Admin Manage User', () => {
         });
 
         it('should return 403 if user has no qualifications', async () => {
-            vi.spyOn(managerService, 'findById').mockResolvedValue({
+            jest.spyOn(managerService, 'findById').mockResolvedValue({
             email: 'test@email.com',
             phoneNumber: '1234567890',
             address: '123 Main St',
@@ -104,7 +99,7 @@ describe('Admin Manage User', () => {
         });
 
         it('should return 409 if already approved', async () => {
-            vi.spyOn(managerService, 'findById').mockResolvedValue({
+            jest.spyOn(managerService, 'findById').mockResolvedValue({
             email: 'test@email.com',
             phoneNumber: '1234567890',
             address: '123 Main St',
@@ -127,7 +122,7 @@ describe('Admin Manage User', () => {
         });
 
         it('should approve manager successfully', async () => {
-            vi.spyOn(managerService, 'findById').mockResolvedValue({
+            jest.spyOn(managerService, 'findById').mockResolvedValue({
             email: 'test@email.com',
             phoneNumber: '1234567890',
             address: '123 Main St',
@@ -162,7 +157,7 @@ describe('Admin Manage User', () => {
         });
 
         it('should return 403 if not an active manager', async () => {
-            vi.spyOn(managerService, 'findByEmail').mockResolvedValue({
+            jest.spyOn(managerService, 'findByEmail').mockResolvedValue({
             email: 'test@email.com',
             phoneNumber: '1234567890',
             address: '123 Main St',
@@ -186,7 +181,7 @@ describe('Admin Manage User', () => {
         });
 
         it('should return 400 if car not available or already assigned', async () => {
-            vi.spyOn(managerService, 'findByEmail').mockResolvedValue({
+            jest.spyOn(managerService, 'findByEmail').mockResolvedValue({
             email: 'test@email.com',
             phoneNumber: '1234567890',
             address: '123 Main St',
@@ -200,7 +195,7 @@ describe('Admin Manage User', () => {
             password: 'hashedPassword',
             role: 'Manager'
         } as any);
-            vi.spyOn(carService, 'getAvailableCar').mockResolvedValue(null);
+            jest.spyOn(carService, 'getAvailableCar').mockResolvedValue(null);
 
             const res = await request(app)
                 .patch(`/api/v1/admin/assign-car/${validId}`)
@@ -211,7 +206,7 @@ describe('Admin Manage User', () => {
         });
 
         it('should assign car to manager successfully', async () => {
-            vi.spyOn(managerService, 'findByEmail').mockResolvedValue({
+            jest.spyOn(managerService, 'findByEmail').mockResolvedValue({
             email: 'test@email.com',
             phoneNumber: '1234567890',
             address: '123 Main St',
@@ -226,7 +221,7 @@ describe('Admin Manage User', () => {
             role: 'Manager'
         } as any);
         
-            vi.spyOn(carService, 'getAvailableCar').mockResolvedValue({
+            jest.spyOn(carService, 'getAvailableCar').mockResolvedValue({
              _id: 'mock-car-id',
             brand: "string",
             model: 'string',
@@ -239,7 +234,7 @@ describe('Admin Manage User', () => {
             updatedAt: new Date().toISOString()
         } as any);
         
-            vi.spyOn(managerService, 'update').mockResolvedValue({
+            jest.spyOn(managerService, 'update').mockResolvedValue({
             email: 'test@email.com',
             phoneNumber: '1234567890',
             address: '123 Main St',
@@ -253,7 +248,7 @@ describe('Admin Manage User', () => {
             password: 'hashedPassword',
             role: 'Manager'
         } as any);
-            vi.spyOn(carService, 'updateCar').mockResolvedValue({
+            jest.spyOn(carService, 'updateCar').mockResolvedValue({
              _id: 'mock-car-id',
             brand: "string",
             model: 'string',

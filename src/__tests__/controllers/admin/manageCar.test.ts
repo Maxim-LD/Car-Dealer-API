@@ -1,9 +1,8 @@
-import { describe, it, beforeEach, expect, vi } from 'vitest';
 import request from 'supertest';
 import app from '../../../app';
 import { carService, managerService } from '../../../controllers/admin/manageCar';
 
-vi.mock('../../../middlewares/authentication', () => ({
+jest.mock('../../../middlewares/authentication', () => ({
     authMiddleware: (req: any, res: any, next: any) => next(),
     protect: (req: any, res: any, next: any) => next(),
     isManager: (req: any, res: any, next: any) => next(),
@@ -13,7 +12,7 @@ vi.mock('../../../middlewares/authentication', () => ({
 
 describe('Admin Manage Car', () => {
     beforeEach(() => {
-        vi.restoreAllMocks();
+        jest.restoreAllMocks();
     });
 
     const validVin = 'VIN123';
@@ -31,7 +30,7 @@ describe('Admin Manage Car', () => {
         });
 
         it('should return 404 if car not found', async () => {
-            vi.spyOn(carService, 'findCar').mockResolvedValue(null);
+            jest.spyOn(carService, 'findCar').mockResolvedValue(null);
 
             const res = await request(app)
                 .patch('/api/v1/admin/remove-car')
@@ -42,7 +41,7 @@ describe('Admin Manage Car', () => {
         });
 
         it('should return 400 if no manager assigned to car', async () => {
-            vi.spyOn(carService, 'findCar').mockResolvedValue({
+            jest.spyOn(carService, 'findCar').mockResolvedValue({
             _id: 'mock-car-id',
             brand: 'Toyota',
             model: 'Corolla',
@@ -62,14 +61,14 @@ describe('Admin Manage Car', () => {
         });
 
         it('should remove car from manager carsAssigned if last unit', async () => {
-            const saveMock = vi.fn();
+            const saveMock = jest.fn();
             const carMock = {
                 _id: validCarId,
                 units: [{ vin: validVin, isAvailable: true }],
                 assignedManager: validManagerId,
                 save: saveMock,
             };
-            vi.spyOn(carService, 'findCar').mockResolvedValue({
+            jest.spyOn(carService, 'findCar').mockResolvedValue({
                 _id: validCarId,
                 brand: 'Toyota',
                 model: 'Corolla',
@@ -81,7 +80,7 @@ describe('Admin Manage Car', () => {
                 save: saveMock,
             } as any)
         
-            const updateByIdSpy = vi.spyOn(managerService, 'updateById').mockResolvedValue({
+            const updateByIdSpy = jest.spyOn(managerService, 'updateById').mockResolvedValue({
                 _id: validManagerId,
                 hireDate: new Date(),
                 yearsExperience: 5,

@@ -1,14 +1,9 @@
-import { describe, it, beforeEach, expect, vi } from 'vitest';
 import request from 'supertest';
 import app from '../../../app';
-import * as manageCategory from '../../../controllers/admin/manageCategory';
+import { categoryService } from '../../../controllers/admin/manageCategory';
 import type { Request, Response, NextFunction } from 'express';
 
-interface MockedAuthModule {
-    authMiddleware: (req: Request, res: Response, next: NextFunction) => void;
-}
-
-vi.mock('../../../middlewares/authentication', () => ({
+jest.mock('../../../middlewares/authentication', () => ({
     authMiddleware: (req: Request, res: Response, next: NextFunction) => next(),
     protect: (req: Request, res: Response, next: NextFunction) => next(),
     isManager: (req: Request, res: Response, next: NextFunction) => next(),
@@ -18,12 +13,12 @@ vi.mock('../../../middlewares/authentication', () => ({
 
 describe('Admin Create Category', () => {
     beforeEach(() => {
-        vi.restoreAllMocks();
+        jest.restoreAllMocks();
     });
 
     it('should create a new category successfully', async () => {
-        vi.spyOn(manageCategory.categoryService, 'findCategory').mockResolvedValue(null);
-        vi.spyOn(manageCategory.categoryService, 'create').mockResolvedValue({
+        jest.spyOn(categoryService, 'findCategory').mockResolvedValue(null);
+        jest.spyOn(categoryService, 'create').mockResolvedValue({
             _id: 'mock-category-id',
             name: 'SUV',
             description: 'Sport Utility Vehicle',
@@ -47,7 +42,7 @@ describe('Admin Create Category', () => {
     });
 
     it('should return 409 if category already exists', async () => {
-        vi.spyOn(manageCategory.categoryService, 'findCategory').mockResolvedValue({
+        jest.spyOn(categoryService, 'findCategory').mockResolvedValue({
             _id: 'mock-category-id',
             name: 'SUV',
             description: 'Sport Utility Vehicle',

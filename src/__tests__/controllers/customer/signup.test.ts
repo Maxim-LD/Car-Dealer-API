@@ -1,4 +1,3 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import request from 'supertest';
 import app from '../../../app';
 import { customerService } from '../../../controllers/customer/signup';
@@ -6,12 +5,12 @@ import { Role } from '../../../interfaces/user';
 
 describe('Customer signup', () => {
     beforeEach(() => {
-        vi.restoreAllMocks();
+        jest.restoreAllMocks();
     })
 
     it('should return 201 and user data on successful signup', async () => {
-        vi.spyOn(customerService, 'findByEmail').mockResolvedValue(null);
-        vi.spyOn(customerService, 'create').mockResolvedValue({
+        jest.spyOn(customerService, 'findByEmail').mockResolvedValue(null);
+        jest.spyOn(customerService, 'create').mockResolvedValue({
             _id: 'user-id-123',
             name: 'Test Name',
             email: 'customer@email.com',
@@ -41,7 +40,7 @@ describe('Customer signup', () => {
     });
 
     it('should return 409 if the user already exists', async () => {
-        vi.spyOn(customerService, 'findByEmail').mockResolvedValue({
+        jest.spyOn(customerService, 'findByEmail').mockResolvedValue({
             _id: 'existing-user-id',
             name: 'Existing User',
             email: 'customer@email.com',
@@ -50,7 +49,7 @@ describe('Customer signup', () => {
             password: 'hashedPassword',
             role: Role.Customer
         } as any);
-        const createSpy = vi.spyOn(customerService, 'create');
+        const createSpy = jest.spyOn(customerService, 'create');
 
         const res = await request(app)
             .post('/api/v1/customer/signup')
@@ -60,7 +59,7 @@ describe('Customer signup', () => {
                 password: 'Password123',
                 confirmPassword: 'Password123',
                 phoneNumber: '123456789',
-                address: 'address'
+                address: 'address',
             });
 
         expect(res.status).toBe(409);
@@ -69,7 +68,7 @@ describe('Customer signup', () => {
     });
 
     it('should return 400 when unmatched passwords is provided', async () => {
-        const createSpy = vi.spyOn(customerService, 'create');
+        const createSpy = jest.spyOn(customerService, 'create');
 
         const res = await request(app)
             .post('/api/v1/customer/signup')

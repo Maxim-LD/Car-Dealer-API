@@ -1,15 +1,14 @@
-import { describe, it, beforeEach, expect, vi } from 'vitest';
 import request from 'supertest';
 import app from '../../../app';
 import { carService } from '../../../controllers/car/cars';
 
 describe('GET /api/v1/cars', () => {
     beforeEach(() => {
-        vi.restoreAllMocks();
+        jest.restoreAllMocks();
     });
 
     it('should return 200 and cars data when cars are found', async () => {
-        vi.spyOn(carService, 'getAllCar').mockResolvedValue({
+        jest.spyOn(carService, 'getAllCar').mockResolvedValue({
             cars: [
                 { _id: 'car1', brand: 'Toyota', model: 'Corolla', price: 10000 },
                 { _id: 'car2', brand: 'Honda', model: 'Civic', price: 12000 }
@@ -33,7 +32,7 @@ describe('GET /api/v1/cars', () => {
     });
 
     it('should return 404 if no cars are found', async () => {
-        vi.spyOn(carService, 'getAllCar').mockResolvedValue({
+        jest.spyOn(carService, 'getAllCar').mockResolvedValue({
             cars: [],
             totalUnitsCount: 0,
             totalCount: 0

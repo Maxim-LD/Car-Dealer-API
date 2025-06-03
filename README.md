@@ -77,8 +77,8 @@ src/
 ### Testing
 - **Run all tests:**
   ```bash
-  npm test
+  npm run test
   ```
 
 ## License
-MIT
+ISC

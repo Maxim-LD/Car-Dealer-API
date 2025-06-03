@@ -1,4 +1,3 @@
-import { describe, it, beforeEach, expect, vi } from 'vitest';
 import request from 'supertest';
 import app from '../../../app';
 import { managerService } from '../../../controllers/manager/profile';
@@ -8,7 +7,7 @@ interface MockedAuthModule {
     authMiddleware: (req: Request, res: Response, next: NextFunction) => void;
 }
 
-vi.mock('../../../middlewares/authentication', () => ({
+jest.mock('../../../middlewares/authentication', () => ({
     authMiddleware: (req: Request, res: Response, next: NextFunction) => next(),
     protect: (req: Request, res: Response, next: NextFunction) => next(),
     isManager: (req: Request, res: Response, next: NextFunction) => next(),
@@ -18,7 +17,7 @@ vi.mock('../../../middlewares/authentication', () => ({
 
 describe('Manager Profile Update', () => {
     beforeEach(() => {
-        vi.restoreAllMocks();
+        jest.restoreAllMocks();
     });
 
     // it('should return 400 if email is missing', async () => {
@@ -49,7 +48,7 @@ describe('Manager Profile Update', () => {
     });
 
     it('should return 404 if manager not found', async () => {
-        vi.spyOn(managerService, 'update').mockResolvedValue(null);
+        jest.spyOn(managerService, 'update').mockResolvedValue(null);
 
         const res = await request(app)
             .patch('/api/v1/manager/profile/test@email.com')
@@ -60,7 +59,7 @@ describe('Manager Profile Update', () => {
     });
 
     it('should update profile successfully', async () => {
-        vi.spyOn(managerService, 'update').mockResolvedValue({
+        jest.spyOn(managerService, 'update').mockResolvedValue({
             email: 'test@email.com',
             phoneNumber: '1234567890',
             address: '123 Main St',
