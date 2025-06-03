@@ -13,7 +13,6 @@ const dbConnect = async (): Promise<void> => {
         } else {
             console.error('MongoDB connection error:', error)
         }
-        throw error // Do not call process.exit(1) here
     }
 }
 
