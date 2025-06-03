@@ -6,6 +6,7 @@
     "build": "tsc",
     "start": "node ./dist/index.js",
     "dev": "ts-node src/index.ts",
+    "render-build": "npm run build",
     "test": "jest",
     "lint": "npx eslint ./src --ext .ts",
     "lint:fix": "npx eslint ./src --ext .ts --fix"
